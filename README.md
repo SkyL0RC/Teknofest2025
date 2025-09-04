@@ -1,167 +1,125 @@
-````markdown
-🔥 YANDES - Yangın Algılama ve Destek Sistemi 🔥
-Uydu verileri ile yangın tespiti ve afet yönetimi
-**#Teknofest2025** 🚀
+<h1 align="center">🔥 YANDES - Yangın Algılama ve Destek Sistemi 🔥</h1>
+<p align="center">
+  <i>Uydu verileri ile yangın tespiti ve afet yönetimi</i><br/>
+  <b>#Teknofest2025 🚀</b>
+</p>
 
-```
-# 🔥 YANDES - Yangın Algılama ve Destek Sistemi  
-
-[![.NET](https://img.shields.io/badge/.NET-9.0-blue.svg)](https://dotnet.microsoft.com/download)  
-[![Python](https://img.shields.io/badge/Python-3.11+-green.svg)](https://python.org)  
-[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)  
-[![Status](https://img.shields.io/badge/Status-Active-brightgreen.svg)]()  
-
-> **YANDES**, uydu verilerini kullanarak yangın tespiti, analizi ve afet yönetimi için geliştirilmiş kapsamlı bir web uygulamasıdır.  
+<p align="center">
+  <a href="https://dotnet.microsoft.com/download"><img src="https://img.shields.io/badge/.NET-9.0-blue.svg" alt=".NET 9.0"/></a>
+  <a href="https://python.org"><img src="https://img.shields.io/badge/Python-3.11+-green.svg" alt="Python 3.11+"/></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="MIT License"/></a>
+  <img src="https://img.shields.io/badge/Status-Active-brightgreen.svg" alt="Status"/>
+</p>
 
 ---
 
-## 🌟 Özellikler  
+## 🌟 Proje Hakkında  
+> **YANDES**, uydu verilerini kullanarak **yangın tespiti, analizi ve afet yönetimi** için geliştirilmiş kapsamlı bir web uygulamasıdır.  
+> Hem bilimsel algoritmaları hem de kullanıcı dostu arayüzü ile **çevreye duyarlı bir teknoloji** sunar.  
 
-### 🛰️ Uydu Veri İşleme  
-- **Sentinel-1 SAR** verileri ile bulut örtüsünden bağımsız analiz  
-- **Sentinel-2** ve **Landsat 8&9** optik verileri ile yüksek çözünürlüklü görüntüleme  
-- **NDVI** ve **NBR** algoritmaları ile vegetasyon ve yanma analizi  
-- Gerçek zamanlı değişim tespiti  
+---
 
-### 🔬 Analiz Algoritmaları  
-- **NDVI (Normalized Difference Vegetation Index)** → Vegetasyon yoğunluğu tespiti  
-- **NBR (Normalized Burn Ratio)** → Yanma şiddeti analizi  
-- **Değişim Tespiti** → Yangın öncesi-sonrası karşılaştırma  
-- İstatistiksel analiz ve raporlama  
+## ✨ Özellikler  
 
-### 🎮 Kullanıcı Deneyimi  
-- İnteraktif harita görselleştirmesi  
-- Oyun tabanlı öğrenme sistemi  
-- Kullanıcı profil yönetimi  
-- Modern ve responsive tasarım  
+| Kategori | Özellikler |
+|----------|------------|
+| 🛰️ **Uydu Veri İşleme** | Sentinel-1 SAR (bulut bağımsız), Sentinel-2 & Landsat 8-9 optik veriler, NDVI & NBR algoritmaları, gerçek zamanlı değişim tespiti |
+| 🔬 **Analiz Algoritmaları** | NDVI → Vegetasyon yoğunluğu, NBR → Yanma şiddeti, Değişim Tespiti → Öncesi-sonrası karşılaştırma, İstatistiksel raporlama |
+| 🎮 **Kullanıcı Deneyimi** | İnteraktif harita, oyunlaştırma, kullanıcı profil yönetimi, modern ve responsive tasarım |
 
 ---
 
 ## 🚀 Hızlı Başlangıç  
 
-### Gereksinimler  
+### Gereksinimler
 - [.NET 9.0 SDK](https://dotnet.microsoft.com/download)  
 - [Python 3.11+](https://python.org)  
-- [Node.js](https://nodejs.org) (Frontend için)  
-- **En az 8GB RAM** (büyük veri setleri için)  
+- [Node.js](https://nodejs.org)  
+- **8GB RAM** (minimum, büyük veri setleri için önerilir)  
 
-### Kurulum  
-
-1. **Projeyi klonlayın**  
+### Kurulum
 ```bash
+# 1. Projeyi klonla
 git clone https://github.com/yourusername/yandes.git
 cd yandes
-````
 
-2. **Python bağımlılıklarını yükleyin**
-
-```bash
+# 2. Python bağımlılıklarını yükle
 pip install rasterio numpy scipy matplotlib plotly folium bokeh geopandas sentinelsat
-```
 
-3. **Backend'i başlatın**
-
-```bash
+# 3. Backend'i başlat
 cd Backend/Fire
 dotnet run
-```
 
-➡️ Backend `http://localhost:5299` adresinde çalışacak.
+# Backend: http://localhost:5299
 
-4. **Frontend'i başlatın**
-
-```bash
+# 4. Frontend'i başlat
 cd Frontend
 npm install
 npm run dev
+
+# Frontend: http://localhost:3000
 ```
 
-➡️ Frontend `http://localhost:3000` adresinde çalışacak.
-
-5. **Uygulamayı açın**
-
-* Ana sayfa → `http://localhost:3000`
-* Uydu veri keşfi → `http://localhost:3000/satellite-explorer.html`
+📌 Açılış:  
+- Ana sayfa → `http://localhost:3000`  
+- Uydu veri keşfi → `http://localhost:3000/satellite-explorer.html`  
 
 ---
 
-## 📊 Veri Setleri
+## 📊 Veri Setleri  
 
-### Sentinel-1 SAR
-
-* **Konum**: `datas/1a_c_İzmir_Yangın_SENTINEL1_SAR/`
-* **Çözünürlük**: 10m
-* **Özellik**: Bulut örtüsünden etkilenmez
-* **Zaman Aralığı**: 12 Haziran – 6 Temmuz 2025
-
-### Landsat 8&9 Optik
-
-* **Konum**: `datas/1ab_İzmir_Yangın_LANDSAT8_9_OPTIK/`
-* **Çözünürlük**: 30m
-* **Bandlar**: 7 spektral bant
-* **Zaman Aralığı**: Yangın öncesi (12-13 Haziran) ve sonrası (6-7 Temmuz)
-
-### Sentinel-2 Optik
-
-* **Konum**: `datas/1aa_İzmir_Yangın_SENTINEL 2 OPTIK/`
-* **Çözünürlük**: 10m & 20m
-* **Bandlar**: 10 spektral bant
-* **Zaman Aralığı**: Yangın öncesi (12 Haziran) ve sonrası (5 Temmuz)
+| Veri Kaynağı | Çözünürlük | Özellikler | Zaman Aralığı |
+|--------------|------------|------------|---------------|
+| **Sentinel-1 SAR** | 10m | Bulut örtüsünden etkilenmez | 12 Haz – 6 Tem 2025 |
+| **Landsat 8 & 9** | 30m | 7 spektral bant | Yangın öncesi (12-13 Haz) / sonrası (6-7 Tem) |
+| **Sentinel-2 Optik** | 10–20m | 10 spektral bant | Yangın öncesi (12 Haz) / sonrası (5 Tem) |
 
 ---
 
-## 🔧 API Endpoints
+## 🔧 API Endpoints  
 
-### Veri Keşfi
+### 📂 Veri Keşfi  
+- `GET /api/dataexplorer/datasets` → Veri setlerini listele  
+- `GET /api/dataexplorer/dataset/{dataType}/{*dataPath}` → Veri detayları  
+- `POST /api/dataexplorer/process` → Veri işleme  
+- `POST /api/dataexplorer/analyze` → Yangın analizi  
 
-* `GET /api/dataexplorer/datasets` → Mevcut veri setlerini listeler
-* `GET /api/dataexplorer/dataset/{dataType}/{*dataPath}` → Veri seti detayları
-* `POST /api/dataexplorer/process` → Veri işleme
-* `POST /api/dataexplorer/analyze` → Yangın analizi
+### 👤 Kullanıcı Yönetimi  
+- `POST /api/auth/register` → Yeni kullanıcı  
+- `POST /api/auth/login` → Giriş yap  
+- `GET /api/profile` → Profil bilgileri  
+- `PUT /api/profile` → Profil güncelleme  
 
-### Kullanıcı Yönetimi
-
-* `POST /api/auth/register` → Kullanıcı kaydı
-* `POST /api/auth/login` → Kullanıcı girişi
-* `GET /api/profile` → Profil bilgileri
-* `PUT /api/profile` → Profil güncelleme
-
-### Yangın Yönetimi
-
-* `GET /api/fires/recent` → Son yangınlar
-* `GET /api/fires/nearby` → Yakındaki yangınlar
-* `POST /api/fires` → Yeni yangın raporu
+### 🔥 Yangın Yönetimi  
+- `GET /api/fires/recent` → Son yangınlar  
+- `GET /api/fires/nearby` → Yakındaki yangınlar  
+- `POST /api/fires` → Yangın raporu oluştur  
 
 ---
 
-## 🏗️ Proje Yapısı
-
+## 🏗️ Proje Yapısı  
 ```bash
 yandes/
 ├── Backend/
 │   └── Fire/               # ASP.NET Core Web API
 │       ├── Controllers/    # API Controllers
-│       ├── Services/       # Business Logic
-│       ├── DTOs/           # Data Transfer Objects
-│       ├── PythonScripts/  # Python Integration
-│       └── Program.cs      # Application Entry Point
+│       ├── Services/       # İş mantığı
+│       ├── DTOs/           # Veri transfer nesneleri
+│       ├── PythonScripts/  # Python entegrasyonu
+│       └── Program.cs
 ├── Frontend/               # Angular.js Frontend
-│   ├── index.html          # Ana sayfa
-│   ├── satellite-explorer.html # Uydu veri keşfi
-│   └── app.js              # Angular.js uygulaması
+│   ├── index.html
+│   ├── satellite-explorer.html
+│   └── app.js
 ├── datas/                  # Uydu veri setleri
-│   ├── 1a_c_İzmir_Yangın_SENTINEL1_SAR/
-│   ├── 1aa_İzmir_Yangın_SENTINEL 2 OPTIK/
-│   └── 1ab_İzmir_Yangın_LANDSAT8_9_OPTIK/
 └── README.md
 ```
 
 ---
 
-## 🧪 Test
+## 🧪 Test  
 
-### Python Script Testleri
-
+### Python Scriptleri
 ```bash
 # Landsat veri testi
 python Backend/Fire/PythonScripts/satellite_processor.py landsat "veri_yolu"
@@ -174,7 +132,6 @@ python Backend/Fire/PythonScripts/satellite_processor.py ndvi "red_band" "nir_ba
 ```
 
 ### API Testleri
-
 ```bash
 # Veri setlerini listele
 curl http://localhost:5299/api/dataexplorer/datasets
@@ -187,40 +144,35 @@ curl -X POST http://localhost:5299/api/auth/register \
 
 ---
 
-## 📈 Analiz Algoritmaları
+## 📈 Analiz Algoritmaları  
 
-### NDVI
-
+### 🌱 NDVI
 ```math
 NDVI = (NIR - Red) / (NIR + Red)
 ```
+- **Amaç**: Vegetasyon yoğunluğu  
+- **Değer Aralığı**: -1 → 1  
+- **Yorum**: Yüksek değer = Yoğun vegetasyon  
 
-* **Amaç**: Vegetasyon yoğunluğu tespiti
-* **Değer Aralığı**: -1 ile 1
-* **Yorum**: Yüksek değer → Yoğun vegetasyon
-
-### NBR
-
+### 🔥 NBR
 ```math
 NBR = (NIR - SWIR2) / (NIR + SWIR2)
 ```
-
-* **Amaç**: Yanma şiddeti tespiti
-* **Değer Aralığı**: -1 ile 1
-* **Yorum**: Düşük değer → Yüksek yanma şiddeti
-
----
-
-## 🔮 Gelecek Geliştirmeler
-
-* [ ] **Gerçek Zamanlı İşleme** → Stream processing
-* [ ] **Makine Öğrenmesi** → Otomatik yangın tespiti
-* [ ] **3D Görselleştirme** → DEM entegrasyonu
-* [ ] **Batch Processing** → Toplu veri işleme
-* [ ] **Docker Desteği** → Containerization
-* [ ] **PostgreSQL/PostGIS** → Coğrafi veritabanı
-* [ ] **Redis Cache** → Performans optimizasyonu
+- **Amaç**: Yanma şiddeti  
+- **Değer Aralığı**: -1 → 1  
+- **Yorum**: Düşük değer = Yüksek yanma şiddeti  
 
 ---
 
+## 🔮 Yol Haritası  
 
+- [ ] ⚡ Gerçek Zamanlı Veri İşleme (stream processing)  
+- [ ] 🤖 Makine Öğrenmesi ile otomatik yangın tespiti  
+- [ ] 🌍 3D Görselleştirme (DEM entegrasyonu)  
+- [ ] 📦 Docker desteği  
+- [ ] 🗄️ PostgreSQL/PostGIS entegrasyonu  
+- [ ] ⚡ Redis cache ile performans artışı  
+
+---
+
+<p align="center">🚀 <b>YANDES - Doğa için teknoloji!</b> 🌍</p>
