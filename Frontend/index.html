@@ -85,6 +85,9 @@
                                     <button class="btn btn-success" ng-click="vm.login()">
                                         <i class="fas fa-sign-in-alt"></i> Giriş Yap
                                     </button>
+                                <button class="btn btn-outline-secondary mt-2" type="button" ng-click="vm.demoLogin()">
+                                    <i class="fas fa-eye"></i> Demo Olarak Göz At
+                                </button>
                                 </div>
                             </form>
                         </div>
@@ -216,7 +219,9 @@
                                 </li>
                             </ul>
                             <div class="d-flex align-items-center gap-3">
-                                <div class="plant-placeholder"></div>
+                                <div class="plant-placeholder">
+                                    <img src="tree-game.png" alt="Fidan Ağacı" style="width:100%; max-width:140px; height:120px; object-fit:contain; border-radius:8px; box-shadow:0 2px 8px #0002; background:#fff; display:block; margin:auto;" />
+                                </div>
                                 <div>
                                     <div><strong>Bitkin:</strong> Fidan</div>
                                     <div><strong>Puan:</strong> {{ vm.points || (vm.game && vm.game.points) }}</div>

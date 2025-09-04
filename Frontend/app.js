@@ -59,9 +59,14 @@ app.controller('YandesController', function($scope, $http) {
     };
 
     vm.ensureMap = function() {
-        if (vm.map || !window.L) return;
+        if (!window.L) return;
         var mapEl = document.getElementById('map');
         if (!mapEl) return;
+        // Eğer eski harita varsa kaldır
+        if (vm.map) {
+            try { vm.map.remove(); } catch (e) {}
+            vm.map = null;
+        }
         vm.map = L.map('map').setView([39.0, 35.0], 6);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             maxZoom: 19,
@@ -75,8 +80,8 @@ app.controller('YandesController', function($scope, $http) {
                 if (!payload.success || !Array.isArray(payload.data)) return;
                 if (payload.data.length === 0) {
                     vm.showAlert('Hotspot bulunamadı', 'info');
-            return;
-        }
+                    return;
+                }
                 payload.data.forEach(function(f) {
                     var title = 'Hotspot (' + Math.round((f.confidence || 0) * 100) + '%)';
                     L.marker([f.latitude, f.longitude], { title: title }).addTo(vm.map)
@@ -234,6 +239,14 @@ app.controller('YandesController', function($scope, $http) {
         }
     };
     vm.logout = function() { vm.auth = { token: '', username: '' }; try { localStorage.removeItem('yandes_auth'); } catch (e) {} };
+
+    // Demo login fonksiyonu: Boş kullanıcı ile giriş yap
+    vm.demoLogin = function() {
+        vm.auth = { token: 'demo', username: 'Demo Kullanıcı' };
+        try { localStorage.setItem('yandes_auth', JSON.stringify(vm.auth)); } catch (e) {}
+        vm.setTab('map');
+        vm.showAlert('Demo modunda uygulamayı gezebilirsiniz.', 'info');
+    };
 
     // Game/Profile
     vm.loadGameState = function() {
