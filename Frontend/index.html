@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' https: data: blob:; connect-src 'self' http://localhost:5180 https:;">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <title>YANDES</title>
+    <base href="/">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- AG Grid CSS -->
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
+    <link rel="stylesheet" href="styles.css">
+    
+
+</head>
+<body>
+    <div id="app" ng-app="yandesApp" ng-controller="YandesController as vm">
+        <div class="container-fluid">
+            <!-- Header -->
+            <div class="row header-section">
+                <div class="col d-flex justify-content-between align-items-center">
+                    <div>
+                        <h1><i class="fas fa-fire"></i> YANDES</h1>
+                        <p class="mb-0">Yangın Algılama ve Destek Sistemi</p>
+                    </div>
+                    <div ng-if="vm.auth.token">
+                        <span class="me-2">{{ vm.auth.username }}</span>
+                        <button class="btn btn-outline-light btn-sm" ng-click="vm.logout()">Çıkış</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Landing (unauthenticated) -->
+            <div ng-if="!vm.auth.token" class="row">
+                <div class="col-lg-4">
+                    <div class="search-container">
+                        <h3 class="mb-3">Doğayı birlikte koruyalım</h3>
+                        <p>YANDES, uydudan gelen yangın verilerini harita üzerinde gösterir, yakın tehlikeler için uyarır ve oyunlaştırma ile fidan bağışına teşvik eder.</p>
+                        <ul>
+                            <li>Gerçek zamanlı sıcak noktalar</li>
+                            <li>Acil çağrı ve konum paylaşımı</li>
+                            <li>Günlük görevler, rozetler, bağış sertifikaları</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="search-container">
+                        <!-- Tab Navigation -->
+                        <ul class="nav nav-pills mb-3" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" ng-class="{active: vm.authMode === 'login'}" ng-click="vm.setAuthMode('login')">
+                                    <i class="fas fa-sign-in-alt"></i> Giriş Yap
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" ng-class="{active: vm.authMode === 'register'}" ng-click="vm.setAuthMode('register')">
+                                    <i class="fas fa-user-plus"></i> Kayıt Ol
+                                </button>
+                            </li>
+                        </ul>
+
+                        <!-- Login Form -->
+                        <div ng-if="vm.authMode === 'login'">
+                            <h5 class="mb-3">Giriş Yap</h5>
+                            <form name="loginForm" novalidate autocomplete="on">
+                                <div class="mb-3">
+                                    <label class="form-label">Email <span class="text-danger">*</span></label>
+                                    <input type="email" class="form-control" name="loginEmail" ng-model="vm.loginForm.email" required autocomplete="username" spellcheck="false">
+                                    <div class="text-danger small" ng-show="loginForm.loginEmail.$touched && loginForm.loginEmail.$error.required">Email alanı zorunludur</div>
+                                    <div class="text-danger small" ng-show="loginForm.loginEmail.$touched && loginForm.loginEmail.$error.email">Geçerli bir email adresi giriniz</div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Şifre <span class="text-danger">*</span></label>
+                                    <input type="password" class="form-control" name="loginPassword" ng-model="vm.loginForm.password" required autocomplete="current-password" minlength="6">
+                                    <div class="text-danger small" ng-show="loginForm.loginPassword.$touched && loginForm.loginPassword.$error.required">Şifre alanı zorunludur</div>
+                                    <div class="text-danger small" ng-show="loginForm.loginPassword.$touched && loginForm.loginPassword.$error.minlength">Şifre en az 6 karakter olmalıdır</div>
+                                </div>
+                                <div class="d-grid">
+                                    <button class="btn btn-success" ng-click="vm.login()">
+                                        <i class="fas fa-sign-in-alt"></i> Giriş Yap
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- Register Form -->
+                        <div ng-if="vm.authMode === 'register'">
+                            <h5 class="mb-3">Kayıt Ol</h5>
+                            <form name="registerForm" novalidate autocomplete="on">
+                                <div class="row g-2 mb-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label">Ad <span class="text-danger">*</span></label>
+                                        <input class="form-control" name="firstName" ng-model="vm.registerForm.firstName" required>
+                                        <div class="text-danger small" ng-show="registerForm.firstName.$touched && registerForm.firstName.$error.required">Ad alanı zorunludur</div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Soyad <span class="text-danger">*</span></label>
+                                        <input class="form-control" name="lastName" ng-model="vm.registerForm.lastName" required>
+                                        <div class="text-danger small" ng-show="registerForm.lastName.$touched && registerForm.lastName.$error.required">Soyad alanı zorunludur</div>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Email <span class="text-danger">*</span></label>
+                                    <input type="email" class="form-control" name="registerEmail" ng-model="vm.registerForm.email" required autocomplete="email" spellcheck="false">
+                                    <div class="text-danger small" ng-show="registerForm.registerEmail.$touched && registerForm.registerEmail.$error.required">Email alanı zorunludur</div>
+                                    <div class="text-danger small" ng-show="registerForm.registerEmail.$touched && registerForm.registerEmail.$error.email">Geçerli bir email adresi giriniz</div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Şifre <span class="text-danger">*</span></label>
+                                    <input type="password" class="form-control" name="registerPassword" ng-model="vm.registerForm.password" required autocomplete="new-password" minlength="6">
+                                    <div class="text-danger small" ng-show="registerForm.registerPassword.$touched && registerForm.registerPassword.$error.required">Şifre alanı zorunludur</div>
+                                    <div class="text-danger small" ng-show="registerForm.registerPassword.$touched && registerForm.registerPassword.$error.minlength">Şifre en az 6 karakter olmalıdır</div>
+                                </div>
+                                <div class="d-grid">
+                                    <button class="btn btn-primary" ng-click="vm.register()">
+                                        <i class="fas fa-user-plus"></i> Kayıt Ol
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <small class="text-muted mt-3 d-block">Devam ederek kullanım şartlarını kabul etmiş olursunuz.</small>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="search-container">
+                        <div class="card h-100">
+                            <div class="card-body text-center">
+                                <i class="fas fa-satellite fa-3x text-primary mb-3"></i>
+                                <h5 class="card-title">Uydu Veri Keşfi</h5>
+                                <p class="card-text">İzmir yangın uydu verilerini keşfedin ve analiz edin</p>
+                                <a href="satellite-explorer.html" class="btn btn-primary">
+                                    <i class="fas fa-rocket"></i> Keşfet
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tabs -->
+            <ul class="nav nav-tabs yandes-tabs" role="tablist" ng-if="vm.auth.token">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" ng-class="{active: vm.activeTab==='map'}" ng-click="vm.setTab('map')">
+                        <i class="fas fa-map"></i> Harita
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" ng-class="{active: vm.activeTab==='emergency'}" ng-click="vm.setTab('emergency')">
+                        <i class="fas fa-phone"></i> Acil Çağrı
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" ng-class="{active: vm.activeTab==='game'}" ng-click="vm.setTab('game')">
+                        <i class="fas fa-seedling"></i> Oyun
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" ng-class="{active: vm.activeTab==='profile'}" ng-click="vm.setTab('profile')">
+                        <i class="fas fa-user"></i> Profil
+                    </button>
+                </li>
+            </ul>
+
+            <!-- Tab Contents -->
+            <div class="tab-content yandes-tab-content" ng-if="vm.auth.token">
+                <!-- Map Tab -->
+                <div ng-if="vm.activeTab==='map'">
+                    <div class="search-container">
+                        <div class="d-flex align-items-center gap-2 flex-wrap">
+                            <button class="btn btn-primary" ng-click="vm.locateMe()">
+                                <i class="fas fa-location-crosshairs"></i> Konumumu Bul
+                            </button>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="heatToggle" ng-model="vm.showHeat">
+                                <label class="form-check-label" for="heatToggle">Sıcak Noktalar</label>
+                            </div>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="windToggle" ng-model="vm.showWind">
+                                <label class="form-check-label" for="windToggle">Rüzgar</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="map" class="yandes-map"></div>
+                    <div ng-if="vm.alertMessage" class="alert" ng-class="vm.alertClass">
+                        {{ vm.alertMessage }}
+                        <button type="button" class="btn-close" ng-click="vm.clearAlert()"></button>
+                    </div>
+                </div>
+
+                <!-- Emergency Tab -->
+                <div ng-if="vm.activeTab==='emergency'" class="text-center py-5">
+                    <p class="lead mb-4">Acil durumlarda 112'yi arayın.</p>
+                    <a href="tel:112" class="btn btn-danger btn-lg">
+                        <i class="fas fa-phone"></i> 112'yi Ara
+                    </a>
+                    <p class="text-muted mt-3">Konum paylaşımını etkin tutun.</p>
+                </div>
+
+                <!-- Game Tab -->
+                <div ng-if="vm.activeTab==='game'">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title"><i class="fas fa-seedling"></i> Günlük Görevler</h5>
+                            <div ng-if="!vm.auth.token" class="alert alert-warning">Görevleri görmek için giriş yapın.</div>
+                            <ul class="list-unstyled mb-4" ng-if="vm.game.tasks">
+                                <li ng-repeat="t in vm.game.tasks">
+                                    <button class="btn btn-sm btn-outline-success" ng-click="vm.completeTask(t.key)" ng-disabled="t.done">Tamamla</button>
+                                    {{t.title}}
+                                </li>
+                            </ul>
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="plant-placeholder"></div>
+                                <div>
+                                    <div><strong>Bitkin:</strong> Fidan</div>
+                                    <div><strong>Puan:</strong> {{ vm.points || (vm.game && vm.game.points) }}</div>
+                                    <button class="btn btn-success" ng-disabled="!vm.auth.token">Fidan Bağışla</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Profile Tab -->
+                <div ng-if="vm.activeTab==='profile'">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title"><i class="fas fa-user-circle"></i> Profil</h5>
+                            <div ng-if="!vm.auth.token">
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <h6>Kayıt Ol</h6>
+                                        <form name="profileRegisterForm" novalidate>
+                                            <div class="input-group mb-2"><span class="input-group-text">Ad <span class="text-danger">*</span></span><input class="form-control" name="profileFirstName" ng-model="vm.registerForm.firstName" required></div>
+                                            <div class="text-danger small" ng-show="profileRegisterForm.profileFirstName.$touched && profileRegisterForm.profileFirstName.$error.required">Ad zorunludur</div>
+                                            <div class="input-group mb-2"><span class="input-group-text">Soyad <span class="text-danger">*</span></span><input class="form-control" name="profileLastName" ng-model="vm.registerForm.lastName" required></div>
+                                            <div class="text-danger small" ng-show="profileRegisterForm.profileLastName.$touched && profileRegisterForm.profileLastName.$error.required">Soyad zorunludur</div>
+                                            <div class="input-group mb-2"><span class="input-group-text">Email <span class="text-danger">*</span></span><input type="email" class="form-control" name="profileEmail" ng-model="vm.registerForm.email" required></div>
+                                            <div class="text-danger small" ng-show="profileRegisterForm.profileEmail.$touched && profileRegisterForm.profileEmail.$error.required">Email zorunludur</div>
+                                            <div class="text-danger small" ng-show="profileRegisterForm.profileEmail.$touched && profileRegisterForm.profileEmail.$error.email">Geçerli email giriniz</div>
+                                            <div class="input-group mb-2"><span class="input-group-text">Şifre <span class="text-danger">*</span></span><input type="password" class="form-control" name="profilePassword" ng-model="vm.registerForm.password" required></div>
+                                            <div class="text-danger small" ng-show="profileRegisterForm.profilePassword.$touched && profileRegisterForm.profilePassword.$error.required">Şifre zorunludur</div>
+                                            <button class="btn btn-primary" ng-click="vm.register()">Kayıt Ol</button>
+                                        </form>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h6>Giriş Yap</h6>
+                                        <form name="profileLoginForm" novalidate>
+                                            <div class="input-group mb-2"><span class="input-group-text">Email <span class="text-danger">*</span></span><input type="email" class="form-control" name="profileLoginEmail" ng-model="vm.loginForm.email" required></div>
+                                            <div class="text-danger small" ng-show="profileLoginForm.profileLoginEmail.$touched && profileLoginForm.profileLoginEmail.$error.required">Email zorunludur</div>
+                                            <div class="text-danger small" ng-show="profileLoginForm.profileLoginEmail.$touched && profileLoginForm.profileLoginEmail.$error.email">Geçerli email giriniz</div>
+                                            <div class="input-group mb-2"><span class="input-group-text">Şifre <span class="text-danger">*</span></span><input type="password" class="form-control" name="profileLoginPassword" ng-model="vm.loginForm.password" required></div>
+                                            <div class="text-danger small" ng-show="profileLoginForm.profileLoginPassword.$touched && profileLoginForm.profileLoginPassword.$error.required">Şifre zorunludur</div>
+                                            <button class="btn btn-success" ng-click="vm.login()">Giriş Yap</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                                                         <div ng-if="vm.auth.token">
+                                 <div class="row">
+                                     <div class="col-md-6">
+                                         <h6><i class="fas fa-user"></i> Profil Bilgileri</h6>
+                                         <div ng-if="vm.profile">
+                                             <p><strong>Email:</strong> {{ vm.profile.email }}</p>
+                                             <p><strong>Rozetler:</strong> {{ vm.profile.badges.join(', ') }}</p>
+                                             <p><strong>Bağışlar:</strong> {{ vm.profile.donations.length }} kayıt</p>
+                                         </div>
+                                         <button class="btn btn-primary btn-sm" ng-click="vm.toggleEditMode()">
+                                             <i class="fas fa-edit"></i> Profili Düzenle
+                                         </button>
+                                     </div>
+                                     <div class="col-md-6">
+                                         <h6><i class="fas fa-lock"></i> Şifre Değiştir</h6>
+                                         <button class="btn btn-warning btn-sm" ng-click="vm.togglePasswordMode()">
+                                             <i class="fas fa-key"></i> Şifre Değiştir
+                                         </button>
+                                     </div>
+                                 </div>
+
+                                 <!-- Profil Düzenleme Formu -->
+                                 <div ng-if="vm.editMode" class="mt-4">
+                                     <h6><i class="fas fa-edit"></i> Profil Düzenle</h6>
+                                     <form name="editProfileForm" novalidate>
+                                         <div class="row g-2 mb-3">
+                                             <div class="col-md-6">
+                                                 <label class="form-label">Ad <span class="text-danger">*</span></label>
+                                                 <input class="form-control" name="editFirstName" ng-model="vm.editForm.firstName" required>
+                                                 <div class="text-danger small" ng-show="editProfileForm.editFirstName.$touched && editProfileForm.editFirstName.$error.required">Ad zorunludur</div>
+                                             </div>
+                                             <div class="col-md-6">
+                                                 <label class="form-label">Soyad <span class="text-danger">*</span></label>
+                                                 <input class="form-control" name="editLastName" ng-model="vm.editForm.lastName" required>
+                                                 <div class="text-danger small" ng-show="editProfileForm.editLastName.$touched && editProfileForm.editLastName.$error.required">Soyad zorunludur</div>
+                                             </div>
+                                         </div>
+                                         <div class="mb-3">
+                                             <label class="form-label">Email <span class="text-danger">*</span></label>
+                                             <input type="email" class="form-control" name="editEmail" ng-model="vm.editForm.email" required autocomplete="email">
+                                             <div class="text-danger small" ng-show="editProfileForm.editEmail.$touched && editProfileForm.editEmail.$error.required">Email zorunludur</div>
+                                             <div class="text-danger small" ng-show="editProfileForm.editEmail.$touched && editProfileForm.editEmail.$error.email">Geçerli bir email adresi giriniz</div>
+                                         </div>
+                                         <div class="d-flex gap-2">
+                                             <button class="btn btn-success" ng-click="vm.updateProfile()">
+                                                 <i class="fas fa-save"></i> Kaydet
+                                             </button>
+                                             <button class="btn btn-secondary" ng-click="vm.cancelEdit()">
+                                                 <i class="fas fa-times"></i> İptal
+                                             </button>
+                                         </div>
+                                     </form>
+                                 </div>
+
+                                 <!-- Şifre Değiştirme Formu -->
+                                 <div ng-if="vm.passwordMode" class="mt-4">
+                                     <h6><i class="fas fa-key"></i> Şifre Değiştir</h6>
+                                     <form name="changePasswordForm" novalidate>
+                                         <div class="mb-3">
+                                             <label class="form-label">Mevcut Şifre <span class="text-danger">*</span></label>
+                                             <input type="password" class="form-control" name="currentPassword" ng-model="vm.passwordForm.currentPassword" required autocomplete="current-password">
+                                             <div class="text-danger small" ng-show="changePasswordForm.currentPassword.$touched && changePasswordForm.currentPassword.$error.required">Mevcut şifre zorunludur</div>
+                                         </div>
+                                         <div class="mb-3">
+                                             <label class="form-label">Yeni Şifre <span class="text-danger">*</span></label>
+                                             <input type="password" class="form-control" name="newPassword" ng-model="vm.passwordForm.newPassword" required autocomplete="new-password" minlength="6">
+                                             <div class="text-danger small" ng-show="changePasswordForm.newPassword.$touched && changePasswordForm.newPassword.$error.required">Yeni şifre zorunludur</div>
+                                             <div class="text-danger small" ng-show="changePasswordForm.newPassword.$touched && changePasswordForm.newPassword.$error.minlength">Şifre en az 6 karakter olmalıdır</div>
+                                         </div>
+                                         <div class="d-flex gap-2">
+                                             <button class="btn btn-warning" ng-click="vm.changePassword()">
+                                                 <i class="fas fa-key"></i> Şifre Değiştir
+                                             </button>
+                                             <button class="btn btn-secondary" ng-click="vm.cancelPasswordChange()">
+                                                 <i class="fas fa-times"></i> İptal
+                                             </button>
+                                         </div>
+                                     </form>
+                                 </div>
+                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.3/angular.min.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+    <script src="app.js"></script>
+</body>
+</html> 

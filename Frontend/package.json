@@ -1,0 +1,20 @@
+{
+  "name": "yandes-frontend",
+  "version": "1.0.0",
+  "description": "YANDES - Yangın Algılama ve Destek Sistemi (Frontend)",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx http-server -p 3000 -c-1",
+    "dev": "npx http-server -p 3000 -c-1 --cors"
+  },
+  "keywords": [
+    "angular",
+    "telefon-rehberi",
+    "frontend"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "http-server": "^14.1.1"
+  }
+} 

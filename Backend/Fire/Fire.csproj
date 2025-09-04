@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>Yandes</AssemblyName>
+    <RootNamespace>Yandes</RootNamespace>
+  </PropertyGroup>
+
+  <!-- Build without external NuGet packages. Exclude EF/Contacts code from compilation. -->
+  <ItemGroup>
+    <Compile Remove="Data\**\*.cs" />
+    <Compile Remove="Repositories\**\*.cs" />
+    <Compile Remove="Services\ContactService.cs" />
+    <Compile Remove="Controllers\ContactsController.cs" />
+    <Compile Remove="Models\**\*.cs" />
+    <Compile Remove="Pages\**\*.cs" />
+    <Content Remove="Pages\**\*" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Data.Odbc" Version="8.0.0" />
+  </ItemGroup>
+
+</Project>
