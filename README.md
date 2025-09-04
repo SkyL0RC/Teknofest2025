@@ -35,7 +35,6 @@
 - [.NET 9.0 SDK](https://dotnet.microsoft.com/download)  
 - [Python 3.11+](https://python.org)  
 - [Node.js](https://nodejs.org)  
-- **8GB RAM** (minimum, büyük veri setleri için önerilir)  
 
 ### Kurulum
 ```bash
@@ -176,3 +175,4 @@ NBR = (NIR - SWIR2) / (NIR + SWIR2)
 ---
 
 <p align="center">🚀 <b>YANDES - Doğa için teknoloji!</b> 🌍</p>
+
